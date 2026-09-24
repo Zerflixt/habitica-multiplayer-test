@@ -304,7 +304,7 @@ SPIELFIGUR AUF DEM SPIELFELD
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.26";
+window.multiplayerTestVersion = "0.29";
 
 /* Ende Testversion */
 
@@ -1192,74 +1192,120 @@ async function () {
             await antwort.json();
 
 
-        const habiticaId =
-            "3724969d-1abb-49a2-a2ee-c32afc04aa6f";
+/* -----------------------------------
+Spieler im Schnappschuss suchen
+----------------------------------- */
+
+function spielerSuchen(
+    objekt,
+    habiticaId
+) {
+
+    if (
+        objekt === null ||
+        typeof objekt !== "object"
+    ) {
+        return null;
+    }
 
 
-        function spielerSuchen(objekt) {
-
-            if (
-                objekt === null ||
-                typeof objekt !== "object"
-            ) {
-                return null;
-            }
+    if (
+        objekt._id === habiticaId
+    ) {
+        return objekt;
+    }
 
 
-            if (
-                objekt._id === habiticaId
-            ) {
-                return objekt;
-            }
+    for (const schluessel in objekt) {
 
-
-            for (const schluessel in objekt) {
-
-                const gefunden =
-                    spielerSuchen(
-                        objekt[schluessel]
-                    );
-
-                if (gefunden) {
-                    return gefunden;
-                }
-            }
-
-
-            return null;
-        }
-
-
-        const spieler =
+        const gefunden =
             spielerSuchen(
-                schnappschuss
+                objekt[schluessel],
+                habiticaId
             );
 
-
-        if (!spieler) {
-
-            throw new Error(
-                "Zerflixt wurde im Schnappschuss nicht gefunden."
-            );
+        if (gefunden) {
+            return gefunden;
         }
+    }
 
 
-        window.aktuellerHabiticaSpieler =
-            spieler;
+    return null;
+}
 
 
-        if (ausgabe) {
+/* -----------------------------------
+Spieler für Multiplayer-Test
+----------------------------------- */
 
-            ausgabe.textContent =
-                "✅ Im Schnappschuss gefunden: " +
-                spieler.profile.name;
-        }
+const multiplayerSpieler = [
+
+    {
+        uid:
+            "wkKQBlUrAec7PXIp0yafXROMLiA2",
+
+        habiticaId:
+            "3724969d-1abb-49a2-a2ee-c32afc04aa6f"
+    },
+
+    {
+        uid:
+            "Y8CGcWDCGrPte2mhLWvgeQsool32",
+
+        habiticaId:
+            "2f95eae1-e2db-48c2-8d3b-f96db4fb7729"
+    }
+];
 
 
-        const canvas =
-            await window.zeichneHabiticaAvatar(
-                spieler
-            );
+/* -----------------------------------
+Avatare beider Spieler bauen
+----------------------------------- */
+
+const avatarNachUid = {};
+
+
+for (const eintrag of multiplayerSpieler) {
+
+    const spieler =
+        spielerSuchen(
+            schnappschuss,
+            eintrag.habiticaId
+        );
+
+
+    if (!spieler) {
+
+        console.error(
+            "Spieler nicht im Schnappschuss gefunden:",
+            eintrag.habiticaId
+        );
+
+        continue;
+    }
+
+
+    const canvas =
+        await window.zeichneHabiticaAvatar(
+            spieler
+        );
+
+
+    avatarNachUid[
+        eintrag.uid
+    ] = canvas;
+}
+
+
+/* -----------------------------------
+Statusmeldung
+----------------------------------- */
+
+if (ausgabe) {
+
+    ausgabe.textContent =
+        "✅ Multiplayer-Spieler geladen";
+}
 
 
 if (avatarPlatz) {
@@ -1269,30 +1315,15 @@ if (avatarPlatz) {
 
 
 /* -----------------------------------
-Position aus Firebase laden
+Alle Positionen beobachten
 ----------------------------------- */
-
-const firebaseUser =
-    window.firebaseAuth.currentUser;
-
-if (!firebaseUser) {
-
-    throw new Error(
-        "Kein Firebase-Benutzer angemeldet."
-    );
-}
-
 
 const positionsRef =
     window.firebaseRef(
         window.firebaseDatabase,
-        "positions/" + firebaseUser.uid
+        "positions"
     );
 
-
-/* -----------------------------------
-Position in Firebase beobachten
------------------------------------ */
 
 window.firebaseOnValue(
 
@@ -1300,61 +1331,98 @@ window.firebaseOnValue(
 
     function (positionsSnapshot) {
 
-        /* -----------------------------------
-        Positionseintrag vorhanden?
-        ----------------------------------- */
-
         if (!positionsSnapshot.exists()) {
 
             console.error(
-                "Keine Position für diesen Benutzer gefunden."
+                "Keine Positionen gefunden."
             );
 
             return;
         }
 
 
-        const position =
+        const positionen =
             positionsSnapshot.val();
-window.aktuelleSpielerPosition = {
-    x: position.x,
-    y: position.y
-};
+
+
+        const firebaseUser =
+            window.firebaseAuth.currentUser;
+
+
         /* -----------------------------------
-        Koordinaten prüfen
+        Alle bekannten Spieler setzen
+        ----------------------------------- */
+
+        for (
+            const eintrag
+            of multiplayerSpieler
+        ) {
+
+            const position =
+                positionen[
+                    eintrag.uid
+                ];
+
+            const canvas =
+                avatarNachUid[
+                    eintrag.uid
+                ];
+
+
+            if (
+                !position ||
+                !canvas
+            ) {
+                continue;
+            }
+
+
+            if (
+                typeof position.x !== "number" ||
+                typeof position.y !== "number"
+            ) {
+                continue;
+            }
+
+
+            window.spielfigurSetzen(
+                canvas,
+                position.x,
+                position.y
+            );
+        }
+
+
+        /* -----------------------------------
+        Eigene Position für Bewegung merken
         ----------------------------------- */
 
         if (
-            typeof position.x !== "number" ||
-            typeof position.y !== "number"
+            firebaseUser &&
+            positionen[
+                firebaseUser.uid
+            ]
         ) {
 
-            console.error(
-                "Firebase-Position enthält kein gültiges x und y."
-            );
+            const eigenePosition =
+                positionen[
+                    firebaseUser.uid
+                ];
 
-            return;
+
+            window.aktuelleSpielerPosition = {
+                x: eigenePosition.x,
+                y: eigenePosition.y
+            };
         }
 
 
         console.log(
-            "Neue Position aus Firebase:",
-            position
-        );
-
-
-        /* -----------------------------------
-        Avatar auf neue Position setzen
-        ----------------------------------- */
-
-        window.spielfigurSetzen(
-            canvas,
-            position.x,
-            position.y
+            "Multiplayer-Positionen:",
+            positionen
         );
     }
 );
-
     } catch (fehler) {
 
         console.error(
