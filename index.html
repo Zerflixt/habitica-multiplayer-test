@@ -106,14 +106,17 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 	</div>
 	<tw-storydata name="Multiplayer mit Grafik" startnode="1" creator="Twine" creator-version="2.10.0" format="SugarCube" format-version="2.37.3" ifid="77b2a6b1-d18f-40ba-9f4b-38caccbfccdd" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* =========================================================
 SUGARCUBE-SEITENLEISTE AUSBLENDEN
+UND STORY-FLÄCHE FREIGEBEN
 ========================================================= */
 
 #ui-bar {
     display: none;
 }
 
-#story {
-    margin-left: 0;
+#story,
+#ui-bar.stowed ~ #story {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /* Ende SugarCube-Seitenleiste */
@@ -223,6 +226,26 @@ SPIELFELD-KOPF
 }
 
 /* Ende Spielfeld-Kopf */
+/* =========================================================
+ABMELDEN-SYMBOL
+========================================================= */
+
+#abmeldenButton {
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    font-size: 27px;
+    line-height: 44px;
+    text-align: center;
+
+    cursor: pointer;
+}
+
+/* Ende Abmelden-Symbol */
+
+
 /* =========================================================
 SPIELFIGUR AUF DEM SPIELFELD
 ========================================================= */
@@ -336,24 +359,11 @@ SPIELFIGUR AUF DEM SPIELFELD
 }
 
 /* Ende Bewegungssteuerung */
-/* =========================================================
-HANDY - SUGARCUBE-BREITE BESSER AUSNUTZEN
-========================================================= */
-
-@media (max-width: 700px) {
-
-    #passages {
-        max-width: none;
-        width: 100%;
-    }
-
-}
-
-/* Ende Handy - SugarCube-Breite */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.042";
+window.multiplayerTestVersion = "0.043";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2768,9 +2778,12 @@ function (zielPassage) {
 
     &lt;h2&gt;Spielfeld&lt;/h2&gt;
 
-    &lt;button onclick=&quot;multiplayerLogout()&quot;&gt;
-        Abmelden
-    &lt;/button&gt;
+&lt;button
+    id=&quot;abmeldenButton&quot;
+    onclick=&quot;window.multiplayerLogout()&quot;
+    aria-label=&quot;Abmelden&quot;
+    title=&quot;Abmelden&quot;
+&gt;⏻&lt;/button&gt;
 
 &lt;/div&gt;
 
