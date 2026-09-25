@@ -332,6 +332,36 @@ box-shadow: none;
     touch-action: manipulation;
 }
 /* -----------------------------------
+Bewegungstasten - Hover / Fokus neutral
+----------------------------------- */
+
+.bewegungstaste:hover,
+.bewegungstaste:focus {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* -----------------------------------
+Bewegungstasten - beim Drücken
+----------------------------------- */
+
+.bewegungstaste:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Pfote leuchtet beim Drücken */
+
+.bewegungstaste:active img {
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold);
+}
+/* -----------------------------------
 Grafiken der Bewegungstasten
 ----------------------------------- */
 
@@ -407,7 +437,7 @@ Grafiken der Bewegungstasten
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.048";
+window.multiplayerTestVersion = "0.049";
 
 /* Ende Testversion */
 /* =========================================================
