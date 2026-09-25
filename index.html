@@ -235,6 +235,9 @@ ABMELDEN-SYMBOL
     height: 44px;
 
     padding: 0;
+	background: transparent;
+border: none;
+box-shadow: none;
 
     font-size: 27px;
     line-height: 44px;
@@ -242,7 +245,15 @@ ABMELDEN-SYMBOL
 
     cursor: pointer;
 }
+#abmeldenButton img {
+    width: 32px;
+    height: 32px;
 
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+}
 /* Ende Abmelden-Symbol */
 
 
@@ -307,6 +318,9 @@ SPIELFIGUR AUF DEM SPIELFELD
 
     margin: 0;
     padding: 0;
+	background: transparent;
+border: none;
+box-shadow: none;
 
     font-size: 30px;
     line-height: 64px;
@@ -317,7 +331,37 @@ SPIELFIGUR AUF DEM SPIELFELD
 
     touch-action: manipulation;
 }
+/* -----------------------------------
+Grafiken der Bewegungstasten
+----------------------------------- */
 
+.bewegungstaste img {
+    width: 58px;
+    height: 58px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+}
+
+/* Pfote in Bewegungsrichtung drehen */
+
+.bewegungstaste.oben img {
+    transform: rotate(0deg);
+}
+
+.bewegungstaste.rechts img {
+    transform: rotate(90deg);
+}
+
+.bewegungstaste.unten img {
+    transform: rotate(180deg);
+}
+
+.bewegungstaste.links img {
+    transform: rotate(270deg);
+}
 
 /* -----------------------------------
    Oben
@@ -363,7 +407,7 @@ SPIELFIGUR AUF DEM SPIELFELD
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.043";
+window.multiplayerTestVersion = "0.048";
 
 /* Ende Testversion */
 /* =========================================================
@@ -429,6 +473,42 @@ window.reservatKarten =
         );
     }
 };
+
+/* =========================================================
+KARTENNAME ANZEIGEN
+========================================================= */
+
+window.kartenNameAnzeigen =
+function () {
+
+    const element =
+        document.getElementById("kartenName");
+
+    if (!element) {
+        return;
+    }
+
+    const position =
+        window.aktuelleSpielerPosition;
+
+    if (
+        !position ||
+        !position.karte ||
+        !window.reservatKarten ||
+        !window.reservatKarten[position.karte]
+    ) {
+        element.textContent = "Unbekannter Ort";
+        return;
+    }
+
+    const karte =
+        window.reservatKarten[position.karte];
+
+    element.textContent =
+        karte.name || position.karte;
+};
+
+/* Ende Kartenname anzeigen */
 /* -----------------------------------
 Kartendaten jetzt laden
 ----------------------------------- */
@@ -814,7 +894,14 @@ LOGOUT
 
 window.multiplayerLogout =
 async function () {
+    const wirklichAbmelden =
+        confirm(
+            "Möchtest du das Reservat wirklich verlassen?"
+        );
 
+    if (!wirklichAbmelden) {
+        return;
+    }
     try {
 
         await window.firebaseSignOut(
@@ -1589,6 +1676,7 @@ window.aktuelleSpielerPosition = {
     x: eigenePosition.x,
     y: eigenePosition.y
 };
+window.kartenNameAnzeigen();
         }
 
 
@@ -2776,14 +2864,14 @@ function (zielPassage) {
         Schnappschuss wird geprüft …
     &lt;/p&gt;
 
-    &lt;h2&gt;Spielfeld&lt;/h2&gt;
+    &lt;h2 id=&quot;kartenName&quot;&gt;Karte wird geladen …&lt;/h2&gt;
 
 &lt;button
     id=&quot;abmeldenButton&quot;
     onclick=&quot;window.multiplayerLogout()&quot;
     aria-label=&quot;Abmelden&quot;
     title=&quot;Abmelden&quot;
-&gt;⏻&lt;/button&gt;
+&gt;&lt;img src=&quot;Daten/abmelden_power.png&quot; alt=&quot;&quot;&gt;&lt;/button&gt;
 
 &lt;/div&gt;
 
@@ -2814,7 +2902,7 @@ function (zielPassage) {
             onclick=&quot;window.spielerBewegen(0, -1)&quot;
             aria-label=&quot;Nach oben&quot;
         &gt;
-            ▲
+            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
         &lt;/button&gt;
 
 
@@ -2824,7 +2912,7 @@ function (zielPassage) {
             onclick=&quot;window.spielerBewegen(-1, 0)&quot;
             aria-label=&quot;Nach links&quot;
         &gt;
-            ◀
+            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
         &lt;/button&gt;
 
 
@@ -2834,7 +2922,7 @@ function (zielPassage) {
             onclick=&quot;window.spielerBewegen(1, 0)&quot;
             aria-label=&quot;Nach rechts&quot;
         &gt;
-            ▶
+            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
         &lt;/button&gt;
 
 
@@ -2844,7 +2932,7 @@ function (zielPassage) {
             onclick=&quot;window.spielerBewegen(0, 1)&quot;
             aria-label=&quot;Nach unten&quot;
         &gt;
-            ▼
+            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
         &lt;/button&gt;
 
     &lt;/div&gt;
