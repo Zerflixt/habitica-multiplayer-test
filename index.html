@@ -437,11 +437,64 @@ Grafiken der Bewegungstasten
 }
 
 /* Ende Bewegungssteuerung */
+/* =========================================================
+HANDY QUERFORMAT
+Karte links - Bewegungssteuerung rechts
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 700px) {
+
+    /* -----------------------------------
+    Spielbereich nebeneinander anordnen
+    ----------------------------------- */
+
+    #spielbereich {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        width: 100%;
+        max-width: none;
+
+        gap: 12px;
+    }
+
+
+    /* -----------------------------------
+    Spielfeld nach Bildschirmhöhe skalieren
+    ----------------------------------- */
+
+    #spielfeld {
+        width: min(
+            70vw,
+            calc(100dvh - 110px)
+        );
+
+        flex: 0 0 auto;
+    }
+
+
+    /* -----------------------------------
+    Steuerkreuz rechts neben das Spielfeld
+    ----------------------------------- */
+
+    #bewegungssteuerung {
+        flex: 0 0 192px;
+
+        margin: 0;
+
+        width: 192px;
+        height: 192px;
+    }
+
+}
+
+/* Ende Handy Querformat */
 </style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.050";
+window.multiplayerTestVersion = "0.051";
 
 /* Ende Testversion */
 /* =========================================================
