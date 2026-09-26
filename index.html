@@ -570,7 +570,7 @@ Karte maximal hoch - Bedienung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.054";
+window.multiplayerTestVersion = "0.055";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1125,6 +1125,53 @@ async function () {
         );
     }
 };
+
+
+/* =========================================================
+VOLLBILD-SYMBOL AKTUALISIEREN
+========================================================= */
+
+window.vollbildSymbolAktualisieren =
+function () {
+
+    const bild =
+        document.querySelector(
+            "#vollbildButton img"
+        );
+
+    if (!bild) {
+        return;
+    }
+
+
+    /* -----------------------------------
+    Passendes Symbol auswählen
+    ----------------------------------- */
+
+    if (document.fullscreenElement) {
+
+        bild.src =
+            "Daten/vollbild_verlassen_gold_64.png";
+
+    } else {
+
+        bild.src =
+            "Daten/vollbild_einschalten_gold_64.png";
+    }
+};
+
+
+/* -----------------------------------
+Auf Änderungen des Vollbildmodus reagieren
+----------------------------------- */
+
+document.addEventListener(
+    "fullscreenchange",
+    function () {
+
+        window.vollbildSymbolAktualisieren();
+    }
+);
 
 /* Ende Vollbild umschalten */
 /* =========================================================
@@ -3106,7 +3153,7 @@ function (zielPassage) {
                 title=&quot;Vollbild&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/vollbild_gold.png&quot;
+                    src=&quot;Daten/vollbild_einschalten_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
@@ -3121,7 +3168,7 @@ function (zielPassage) {
                 title=&quot;Abmelden&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/abmelden_power.png&quot;
+                    src=&quot;Daten/abmelden_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
@@ -3164,7 +3211,7 @@ function (zielPassage) {
                 aria-label=&quot;Nach links&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    src=&quot;Daten/bewegung_wolfspfote_oben_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
