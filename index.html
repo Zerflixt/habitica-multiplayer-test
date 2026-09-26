@@ -255,7 +255,55 @@ box-shadow: none;
     object-fit: contain;
 }
 /* Ende Abmelden-Symbol */
+/* =========================================================
+VOLLBILD-SYMBOL
+========================================================= */
 
+#vollbildButton {
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    line-height: 44px;
+    text-align: center;
+
+    cursor: pointer;
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+#vollbildButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* SugarCube-/Browser-Effekte unterdrücken */
+
+#vollbildButton:hover,
+#vollbildButton:focus,
+#vollbildButton:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ende Vollbild-Symbol */
 
 /* =========================================================
 SPIELFIGUR AUF DEM SPIELFELD
@@ -522,7 +570,7 @@ Karte maximal hoch - Bedienung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.053";
+window.multiplayerTestVersion = "0.054";
 
 /* Ende Testversion */
 /* =========================================================
