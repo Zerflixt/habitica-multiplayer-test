@@ -285,6 +285,10 @@ SPIELFIGUR AUF DEM SPIELFELD
     width: min(500px, 100%);
 }
 
+#spielsteuerung {
+    width: 100%;
+}
+
 /* =========================================================
    Bewegungssteuerung
    ========================================================= */
@@ -442,10 +446,15 @@ HANDY QUERFORMAT
 Karte links - Bewegungssteuerung rechts
 ========================================================= */
 
+/* =========================================================
+HANDY QUERFORMAT
+Karte maximal hoch - Bedienung rechts
+========================================================= */
+
 @media (orientation: landscape) and (max-height: 700px) {
 
     /* -----------------------------------
-    Spielbereich nebeneinander anordnen
+    Gesamten Spielbereich nebeneinander
     ----------------------------------- */
 
     #spielbereich {
@@ -456,45 +465,64 @@ Karte links - Bewegungssteuerung rechts
         width: 100%;
         max-width: none;
 
-        gap: 12px;
+        gap: 16px;
     }
 
 
     /* -----------------------------------
-    Spielfeld nach Bildschirmhöhe skalieren
+    Karte nach verfügbarer Höhe
     ----------------------------------- */
 
     #spielfeld {
-        width: min(
-            70vw,
-            calc(100dvh - 110px)
-        );
+        width: calc(100dvh - 16px);
+        height: calc(100dvh - 16px);
 
         flex: 0 0 auto;
     }
 
 
     /* -----------------------------------
-    Steuerkreuz rechts neben das Spielfeld
+    Bedienbereich rechts
+    ----------------------------------- */
+
+    #spielsteuerung {
+        flex: 1 1 auto;
+        width: auto;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 220px;
+    }
+
+
+    /* -----------------------------------
+    Kopf rechts über der Steuerung
+    ----------------------------------- */
+
+    .spielfeld-kopf {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+
+    /* -----------------------------------
+    Steuerkreuz
     ----------------------------------- */
 
     #bewegungssteuerung {
-        flex: 0 0 192px;
-
-        margin: 0;
-
-        width: 192px;
-        height: 192px;
+        margin: 12px auto 0 auto;
     }
 
 }
 
-/* Ende Handy Querformat */
-</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende Handy Querformat */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.051";
+window.multiplayerTestVersion = "0.052";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2945,84 +2973,133 @@ function (zielPassage) {
 &lt;/div&gt;
 
 
-&lt;div class=&quot;spielfeld-kopf&quot;&gt;
-
-    &lt;p id=&quot;schnappschussTest&quot;&gt;
-        Schnappschuss wird geprüft …
-    &lt;/p&gt;
-
-    &lt;h2 id=&quot;kartenName&quot;&gt;Karte wird geladen …&lt;/h2&gt;
-
-&lt;button
-    id=&quot;abmeldenButton&quot;
-    onclick=&quot;window.multiplayerLogout()&quot;
-    aria-label=&quot;Abmelden&quot;
-    title=&quot;Abmelden&quot;
-&gt;&lt;img src=&quot;Daten/abmelden_power.png&quot; alt=&quot;&quot;&gt;&lt;/button&gt;
-
-&lt;/div&gt;
-
-
-&lt;div id=&quot;avatarTest&quot;&gt;
-    Avatar wird geladen …
-&lt;/div&gt;
-
-
 &lt;!-- =====================================================
-     GEMEINSAMER BEREICH FÜR SPIELFELD + STEUERKREUZ
+     GEMEINSAMER SPIELBEREICH
      ===================================================== --&gt;
 
 &lt;div id=&quot;spielbereich&quot;&gt;
 
-    &lt;!-- Spielfeld --&gt;
+
+    &lt;!-- =================================================
+         SPIELFELD / KARTE
+         ================================================= --&gt;
 
     &lt;div id=&quot;spielfeld&quot;&gt;&lt;/div&gt;
 
 
-    &lt;!-- Bewegungssteuerung --&gt;
+    &lt;!-- =================================================
+         RECHTER BEDIENBEREICH
+         Im Hochformat wird dieser Bereich weiterhin
+         unterhalb der Karte angezeigt.
+         ================================================= --&gt;
 
-    &lt;div id=&quot;bewegungssteuerung&quot;&gt;
-
-        &lt;button
-            id=&quot;bewegungOben&quot;
-            class=&quot;bewegungstaste oben&quot;
-            onclick=&quot;window.spielerBewegen(0, -1)&quot;
-            aria-label=&quot;Nach oben&quot;
-        &gt;
-            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
-        &lt;/button&gt;
+    &lt;div id=&quot;spielsteuerung&quot;&gt;
 
 
-        &lt;button
-            id=&quot;bewegungLinks&quot;
-            class=&quot;bewegungstaste links&quot;
-            onclick=&quot;window.spielerBewegen(-1, 0)&quot;
-            aria-label=&quot;Nach links&quot;
-        &gt;
-            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
-        &lt;/button&gt;
+        &lt;!-- ---------------------------------------------
+             Kopf mit Status, Kartenname und Abmelden
+             --------------------------------------------- --&gt;
+
+        &lt;div class=&quot;spielfeld-kopf&quot;&gt;
+
+            &lt;p id=&quot;schnappschussTest&quot;&gt;
+                Schnappschuss wird geprüft …
+            &lt;/p&gt;
+
+            &lt;h2 id=&quot;kartenName&quot;&gt;
+                Karte wird geladen …
+            &lt;/h2&gt;
+
+            &lt;button
+                id=&quot;abmeldenButton&quot;
+                onclick=&quot;window.multiplayerLogout()&quot;
+                aria-label=&quot;Abmelden&quot;
+                title=&quot;Abmelden&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/abmelden_power.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+        &lt;/div&gt;
 
 
-        &lt;button
-            id=&quot;bewegungRechts&quot;
-            class=&quot;bewegungstaste rechts&quot;
-            onclick=&quot;window.spielerBewegen(1, 0)&quot;
-            aria-label=&quot;Nach rechts&quot;
-        &gt;
-            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
-        &lt;/button&gt;
+        &lt;!-- ---------------------------------------------
+             Platzhalter für Avatar-Ladevorgang
+             --------------------------------------------- --&gt;
+
+        &lt;div id=&quot;avatarTest&quot;&gt;
+            Avatar wird geladen …
+        &lt;/div&gt;
 
 
-        &lt;button
-            id=&quot;bewegungUnten&quot;
-            class=&quot;bewegungstaste unten&quot;
-            onclick=&quot;window.spielerBewegen(0, 1)&quot;
-            aria-label=&quot;Nach unten&quot;
-        &gt;
-            &lt;img src=&quot;Daten/bewegung_wolfspfote_oben.png&quot; alt=&quot;&quot;&gt;
-        &lt;/button&gt;
+        &lt;!-- ---------------------------------------------
+             Bewegungssteuerung
+             --------------------------------------------- --&gt;
+
+        &lt;div id=&quot;bewegungssteuerung&quot;&gt;
+
+            &lt;button
+                id=&quot;bewegungOben&quot;
+                class=&quot;bewegungstaste oben&quot;
+                onclick=&quot;window.spielerBewegen(0, -1)&quot;
+                aria-label=&quot;Nach oben&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+
+            &lt;button
+                id=&quot;bewegungLinks&quot;
+                class=&quot;bewegungstaste links&quot;
+                onclick=&quot;window.spielerBewegen(-1, 0)&quot;
+                aria-label=&quot;Nach links&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+
+            &lt;button
+                id=&quot;bewegungRechts&quot;
+                class=&quot;bewegungstaste rechts&quot;
+                onclick=&quot;window.spielerBewegen(1, 0)&quot;
+                aria-label=&quot;Nach rechts&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+
+            &lt;button
+                id=&quot;bewegungUnten&quot;
+                class=&quot;bewegungstaste unten&quot;
+                onclick=&quot;window.spielerBewegen(0, 1)&quot;
+                aria-label=&quot;Nach unten&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+        &lt;/div&gt;
+
+        &lt;!-- Ende Bewegungssteuerung --&gt;
+
 
     &lt;/div&gt;
+
+    &lt;!-- Ende rechter Bedienbereich --&gt;
+
 
 &lt;/div&gt;
 
@@ -3032,9 +3109,9 @@ function (zielPassage) {
 &lt;&lt;done&gt;&gt;
 
     &lt;&lt;run window.spielfeldErstellen()&gt;&gt;
-    
-	&lt;&lt;run window.spielfeldGroesseBeobachten()&gt;&gt;
-    
+
+    &lt;&lt;run window.spielfeldGroesseBeobachten()&gt;&gt;
+
     &lt;&lt;run window.schnappschussTestenUndAvatarZeigen()&gt;&gt;
 
 &lt;&lt;/done&gt;&gt;
