@@ -528,15 +528,7 @@ Karte links - Bewegungssteuerung rechts
 
 @media (orientation: landscape) and (max-height: 700px) {
 
-    /* -----------------------------------
-    SugarCube-Ränder entfernen
-    ----------------------------------- */
 
-    #story,
-    #ui-bar.stowed ~ #story {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
 
 
     /* -----------------------------------
@@ -602,7 +594,7 @@ Karte links - Bewegungssteuerung rechts
 
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
     }
 
@@ -611,9 +603,9 @@ Karte links - Bewegungssteuerung rechts
     Steuerkreuz
     ----------------------------------- */
 
-    #bewegungssteuerung {
-        margin: 12px auto 0 auto;
-    }
+#bewegungssteuerung {
+    margin: 12px 0 0 0;
+}
 
 }
 
@@ -623,7 +615,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.059";
+window.multiplayerTestVersion = "0.060";
 
 /* Ende Testversion */
 /* =========================================================
