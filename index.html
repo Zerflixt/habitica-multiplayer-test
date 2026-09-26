@@ -403,20 +403,25 @@ padding-right: 16px;
    ========================================================= */
 
 #bewegungssteuerung {
-    display: grid;
+display: grid;
 
-    grid-template-columns:
-        48px 48px 48px;
+/* 3 x 3 Raster für das Steuerkreuz */
+grid-template-columns:
+    48px 48px 48px;
 
-    grid-template-rows:
-        48px 48px 48px;
+grid-template-rows:
+    48px 48px 48px;
 
-    width: 144px;
-    height: 144px;
+width: 144px;
+height: 144px;
+
+/* Nicht vom übergeordneten Flex-Layout verformen lassen */
+flex: 0 0 144px;
 
 margin: 12px 0 0 0;
+padding: 0;
 
-    gap: 0;
+gap: 0;
 }
 
 
@@ -651,7 +656,7 @@ height: calc(100dvh - 16px);
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.062";
+window.multiplayerTestVersion = "0.063";
 
 /* Ende Testversion */
 /* =========================================================
