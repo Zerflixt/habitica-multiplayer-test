@@ -644,7 +644,7 @@ height: calc(100dvh - 16px);
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.064";
+window.multiplayerTestVersion = "0.065";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1846,7 +1846,16 @@ Avatare beider Spieler bauen
 ----------------------------------- */
 
 const avatarNachUid = {};
+/*
+Für Größenänderungen des Spielfelds merken.
 
+Dadurch können beim Drehen des Handys
+alle Avatare neu positioniert werden.
+*/
+window.avatarNachUid =
+    avatarNachUid;
+
+window.multiplayerPositionen = {};
 
 for (const eintrag of multiplayerSpieler) {
 
@@ -1926,7 +1935,12 @@ window.firebaseOnValue(
 
         const positionen =
             positionsSnapshot.val();
+/* -----------------------------------
+Positionen für Größenänderungen merken
+----------------------------------- */
 
+window.multiplayerPositionen =
+    positionen;
 
         const firebaseUser =
             window.firebaseAuth.currentUser;
@@ -2971,31 +2985,61 @@ function () {
         new ResizeObserver(
             function () {
 
-                const position =
-                    window.aktuelleSpielerPosition;
-
-                const canvas =
-                    document.querySelector(
-                        "#spielfeld .spielfigur"
-                    );
-
+                /* -----------------------------------
+                Voraussetzungen prüfen
+                ----------------------------------- */
 
                 if (
-                    !position ||
-                    !canvas
+                    !window.avatarNachUid ||
+                    !window.multiplayerPositionen
                 ) {
                     return;
                 }
 
 
-                window.spielfigurSetzen(
-                    canvas,
-                    position.x,
-                    position.y
-                );
+                /* -----------------------------------
+                Alle bekannten Avatare neu setzen
+                ----------------------------------- */
+
+                for (
+                    const uid
+                    in window.avatarNachUid
+                ) {
+
+                    const canvas =
+                        window.avatarNachUid[
+                            uid
+                        ];
+
+                    const position =
+                        window.multiplayerPositionen[
+                            uid
+                        ];
+
+
+                    if (
+                        !canvas ||
+                        !position ||
+                        typeof position.x !== "number" ||
+                        typeof position.y !== "number"
+                    ) {
+                        continue;
+                    }
+
+
+                    window.spielfigurSetzen(
+                        canvas,
+                        position.x,
+                        position.y
+                    );
+                }
             }
         );
 
+
+    /* -----------------------------------
+    Spielfeld beobachten
+    ----------------------------------- */
 
     beobachter.observe(
         spielfeld
