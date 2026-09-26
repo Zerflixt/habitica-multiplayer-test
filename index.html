@@ -142,11 +142,7 @@ border: 2px solid #888;
 
 box-sizing: border-box;
 
-/* Hintergrundkarte */
-background-image: url("Daten/Karte_Bücherei.png");
-background-size: 100% 100%;
-background-position: center;
-background-repeat: no-repeat;
+
 
 }
 
@@ -174,8 +170,18 @@ text-shadow:
     -1px -1px 2px black;
 
 padding: 2px;
+z-index: 90;
 }
 
+/* ------------------------------
+Karteneditor: Avatar-Ebene 2
+------------------------------ */
+
+.spielfeld-feld.editor-avatar-ebene2 {
+    background-color: rgba(0, 80, 255, 0.65) !important;
+}
+
+/* Ende Karteneditor: Avatar-Ebene 2 */
 /* -----------------------------------
 Karteneditor: gesperrtes Feld
 ----------------------------------- */
@@ -374,6 +380,60 @@ SPIELFIGUR AUF DEM SPIELFELD
 #spielfeld {
     position: relative;
 }
+/* =========================================================
+KARTENEBENEN
+========================================================= */
+
+/*
+Beide Kartenebenen liegen exakt über dem
+gesamten Spielfeld.
+
+Die eigentlichen Ebenennummern kommen aus
+unserem Reservat-Ebenensystem.
+*/
+
+#kartenEbene1,
+#kartenEbene3 {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+}
+
+
+/* -----------------------------------
+Kartenebene 1
+----------------------------------- */
+
+#kartenEbene1 {
+    background-image:
+        url("Daten/Karte_Bücherei_Ebene1.png");
+
+    z-index: 10;
+}
+
+
+/* -----------------------------------
+Kartenebene 3
+----------------------------------- */
+
+#kartenEbene3 {
+    background-image:
+        url("Daten/Karte_Bücherei_Ebene3.png");
+
+    z-index: 30;
+}
+
+/* Ende Kartenebenen */
 
 .spielfigur {
     position: absolute;
@@ -603,7 +663,7 @@ Karte links - Bewegungssteuerung rechts
 
         height: calc(100dvh - 16px);
 
-        column-gap: 16px;
+        column-gap: 0px;
 
         width: 100%;
         max-width: none;
@@ -682,9 +742,37 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.067";
+window.multiplayerTestVersion = "0.078";
 
 /* Ende Testversion */
+/* =========================================================
+RESERVAT - Z-EBENEN
+========================================================= */
+
+/*
+Die normalen Ebenen verwenden gerade Zahlen.
+
+Ungerade Zahlen bleiben absichtlich frei,
+falls später eine zusätzliche Zwischenebene
+benötigt wird.
+*/
+
+window.reservatEbenen = {
+
+    karte1: 10,
+
+    avatar2Andere: 20,
+    avatar2Eigen: 22,
+
+    karte3: 30,
+
+    avatar4Andere: 40,
+    avatar4Eigen: 42
+
+};
+
+/* Ende Reservat - Z-Ebenen */
+
 /* =========================================================
 KARTEN-DEBUG
 ========================================================= */
@@ -830,6 +918,60 @@ function (kartenName, x, y) {
 };
 
 /* Ende Reservat - Feldprüfung */
+/* =========================================================
+RESERVAT - AVATAR-EBENE-2-FELD PRÜFEN
+========================================================= */
+
+window.istAvatarEbene2Feld =
+function (kartenName, x, y) {
+
+    /* -----------------------------------
+    Karte suchen
+    ----------------------------------- */
+
+    if (
+        !window.reservatKarten ||
+        !window.reservatKarten[kartenName]
+    ) {
+        return false;
+    } /* Ende Karte vorhanden */
+
+
+    const karte =
+        window.reservatKarten[kartenName];
+
+
+    /* -----------------------------------
+    Ebene-2-Felder prüfen
+    ----------------------------------- */
+
+    if (
+        !Array.isArray(
+            karte.avatarEbene2Felder
+        )
+    ) {
+        return false;
+    } /* Ende Array-Prüfung */
+
+
+    /* -----------------------------------
+    Koordinate suchen
+    ----------------------------------- */
+
+    return karte.avatarEbene2Felder.some(
+        function (feld) {
+
+            return (
+                feld[0] === x &&
+                feld[1] === y
+            );
+
+        } /* Ende Feldvergleich */
+    );
+
+};
+
+/* Ende Reservat - Avatar-Ebene-2-Feld prüfen */
 /* =========================================================
 FIREBASE – MULTIPLAYER PROOF OF WORK
 ========================================================= */
@@ -2003,24 +2145,71 @@ window.multiplayerPositionen =
                     eintrag.uid
                 ];
 /* -----------------------------------
-Eigener Avatar immer vor den
-anderen Avataren anzeigen
+Avatar-Z-Ebene bestimmen
 ----------------------------------- */
 
-if (canvas) {
+if (
+    canvas &&
+    position &&
+    typeof position.x === "number" &&
+    typeof position.y === "number"
+) {
+
+    /* -----------------------------------
+    Prüfen, ob der Avatar auf einem
+    Ebene-2-Feld steht
+    ----------------------------------- */
+
+    const istEbene2 =
+        window.istAvatarEbene2Feld(
+            position.karte,
+            position.x,
+            position.y
+        );
+
+
+    /* -----------------------------------
+    Eigener Spieler
+    ----------------------------------- */
 
     if (
         firebaseUser &&
         eintrag.uid === firebaseUser.uid
     ) {
 
-        canvas.style.zIndex = "20";
+        if (istEbene2) {
+
+            canvas.style.zIndex =
+                window.reservatEbenen.avatar2Eigen;
+
+        } else {
+
+            canvas.style.zIndex =
+                window.reservatEbenen.avatar4Eigen;
+
+        } /* Ende Ebene 2 / Ebene 4 */
 
     } else {
 
-        canvas.style.zIndex = "10";
-    }
-}
+        /* -----------------------------------
+        Andere Spieler
+        ----------------------------------- */
+
+        if (istEbene2) {
+
+            canvas.style.zIndex =
+                window.reservatEbenen.avatar2Andere;
+
+        } else {
+
+            canvas.style.zIndex =
+                window.reservatEbenen.avatar4Andere;
+
+        } /* Ende Ebene 2 / Ebene 4 */
+
+    } /* Ende eigener / anderer Spieler */
+
+} /* Ende Avatar-Z-Ebene */
 
             if (
                 !position ||
@@ -2372,6 +2561,24 @@ if (window.kartenDebugRaster) {
         );
     }
 
+/* -----------------------------------
+Avatar-Ebene-2-Feld blau anzeigen
+----------------------------------- */
+
+if (
+    position &&
+    window.istAvatarEbene2Feld(
+        position.karte,
+        x,
+        y
+    )
+) {
+
+    feld.classList.add(
+        "editor-avatar-ebene2"
+    );
+
+} /* Ende Avatar-Ebene-2-Feld prüfen */
 } else {
 
     /* -----------------------------------
@@ -2382,11 +2589,15 @@ if (window.kartenDebugRaster) {
         "debug-raster"
     );
 
-    feld.classList.remove(
-        "editor-gesperrt"
-    );
+feld.classList.remove(
+    "editor-gesperrt"
+);
 
-    feld.textContent = "";
+feld.classList.remove(
+    "editor-avatar-ebene2"
+);
+
+feld.textContent = "";
 }
             }
         );
@@ -2524,6 +2735,162 @@ document.addEventListener(
 );
 
 /* Ende Karteneditor - Shift + S */
+
+/* =========================================================
+KARTENEDITOR - AVATAR-EBENE MIT SHIFT + A UMSCHALTEN
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function (ereignis) {
+
+        /* -----------------------------------
+        Nur Shift + A auswerten
+        ----------------------------------- */
+
+        if (
+            ereignis.shiftKey !== true ||
+            ereignis.key.toLowerCase() !== "a"
+        ) {
+            return;
+        } /* Ende Tastenkombination prüfen */
+
+
+        /* -----------------------------------
+        Aktuelle Spielerposition holen
+        ----------------------------------- */
+
+        const position =
+            window.aktuelleSpielerPosition;
+
+        if (!position) {
+            return;
+        } /* Ende Positionsprüfung */
+
+
+        /* -----------------------------------
+        Aktuelle Karte holen
+        ----------------------------------- */
+
+        const karte =
+            window.reservatKarten[
+                position.karte
+            ];
+
+        if (!karte) {
+            return;
+        } /* Ende Kartenprüfung */
+
+
+        /* -----------------------------------
+        Array sicherstellen
+        ----------------------------------- */
+
+        if (
+            !Array.isArray(
+                karte.avatarEbene2Felder
+            )
+        ) {
+
+            karte.avatarEbene2Felder = [];
+
+        } /* Ende Array-Prüfung */
+
+
+        /* -----------------------------------
+        Aktuelles Feld im Array suchen
+        ----------------------------------- */
+
+        const index =
+            karte.avatarEbene2Felder.findIndex(
+                function (feld) {
+
+                    return (
+                        feld[0] === position.x &&
+                        feld[1] === position.y
+                    );
+
+                } /* Ende Feldvergleich */
+            );
+
+
+        /* -----------------------------------
+        Vorhandenes Ebene-2-Feld entfernen
+        oder neues hinzufügen
+        ----------------------------------- */
+
+        if (index >= 0) {
+
+            karte.avatarEbene2Felder.splice(
+                index,
+                1
+            );
+
+        } else {
+
+            karte.avatarEbene2Felder.push([
+                position.x,
+                position.y
+            ]);
+
+        } /* Ende Ebene-2-Feld umschalten */
+
+
+        /* -----------------------------------
+        Blaue Anzeige aktualisieren
+        ----------------------------------- */
+
+        const feldIndex =
+            position.y * 10 +
+            position.x;
+
+        const felder =
+            document.querySelectorAll(
+                "#spielfeld .spielfeld-feld"
+            );
+
+        const aktuellesFeld =
+            felder[feldIndex];
+
+
+        if (aktuellesFeld) {
+
+            if (
+                window.istAvatarEbene2Feld(
+                    position.karte,
+                    position.x,
+                    position.y
+                )
+            ) {
+
+                aktuellesFeld.classList.add(
+                    "editor-avatar-ebene2"
+                );
+
+            } else {
+
+                aktuellesFeld.classList.remove(
+                    "editor-avatar-ebene2"
+                );
+
+            } /* Ende blaue Markierung setzen */
+
+        } /* Ende aktuelles Feld vorhanden */
+
+
+        console.log(
+            "Aktuelle Avatar-Ebene-2-Felder:",
+            karte.avatarEbene2Felder
+        );
+
+    } /* Ende Shift+A Ereignis */
+);
+
+/* Ende Karteneditor - Shift + A */
+/* =========================================================
+KARTENEDITOR - JSON SCHÖN FORMATIEREN
+========================================================= */
+
 /* =========================================================
 KARTENEDITOR - JSON SCHÖN FORMATIEREN
 ========================================================= */
@@ -2537,78 +2904,49 @@ function () {
 
     if (!window.reservatKartenDaten) {
         return "";
-    }
+    } /* Ende Sicherheitsprüfung */
 
 
     /* -----------------------------------
-    Sperrfelder aller Karten sortieren
+    Hilfsfunktion:
+    Koordinaten sortieren
 
     Reihenfolge:
     zuerst Y
     dann X
     ----------------------------------- */
 
-    for (
-        const kartenName
-        in window.reservatKartenDaten.karten
-    ) {
+    function koordinatenSortieren(felder) {
 
-        const karte =
-            window.reservatKartenDaten
-                .karten[kartenName];
+        felder.sort(
+            function (a, b) {
 
-        if (
-            Array.isArray(
-                karte.gesperrteFelder
-            )
-        ) {
+                if (a[1] !== b[1]) {
+                    return a[1] - b[1];
+                } /* Ende unterschiedliche Y-Werte */
 
-            karte.gesperrteFelder.sort(
-                function (a, b) {
+                return a[0] - b[0];
 
-                    if (a[1] !== b[1]) {
-                        return a[1] - b[1];
-                    }
-
-                    return a[0] - b[0];
-                }
-            );
-        }
-    }
-
-
-    /* -----------------------------------
-    Zunächst normale JSON erzeugen
-    ----------------------------------- */
-
-    let text =
-        JSON.stringify(
-            window.reservatKartenDaten,
-            null,
-            4
+            } /* Ende Sortiervergleich */
         );
 
+    } /* Ende koordinatenSortieren */
+
 
     /* -----------------------------------
-    gesperrteFelder jeder Karte durch
-    unsere kompakte Darstellung ersetzen
+    Hilfsfunktion:
+    Koordinaten kompakt formatieren
     ----------------------------------- */
 
-    for (
-        const kartenName
-        in window.reservatKartenDaten.karten
+    function koordinatenKompaktFormatieren(
+        text,
+        eigenschaftsName,
+        felder
     ) {
 
-        const karte =
-            window.reservatKartenDaten
-                .karten[kartenName];
-
-        const felder =
-            karte.gesperrteFelder;
-
         if (!Array.isArray(felder)) {
-            continue;
-        }
+            return text;
+        } /* Ende Array-Prüfung */
 
 
         /* -----------------------------------
@@ -2624,16 +2962,17 @@ function () {
 
             if (!zeilen[y]) {
                 zeilen[y] = [];
-            }
+            } /* Ende neue Y-Zeile */
 
             zeilen[y].push(
                 "[" + x + "," + y + "]"
             );
-        }
+
+        } /* Ende Felder gruppieren */
 
 
         /* -----------------------------------
-        Kompakten Block bauen
+        Kompakte Zeilen erzeugen
         ----------------------------------- */
 
         const kompakteZeilen = [];
@@ -2647,28 +2986,37 @@ function () {
                 "                " +
                 zeilen[y].join(", ")
             );
-        }
 
+        } /* Ende kompakte Zeilen erzeugen */
+
+
+        /* -----------------------------------
+        Kompakten JSON-Block bauen
+        ----------------------------------- */
 
         let kompakterBlock;
 
         if (kompakteZeilen.length === 0) {
 
             kompakterBlock =
-                "\"gesperrteFelder\": []";
+                "\"" +
+                eigenschaftsName +
+                "\": []";
 
         } else {
 
             kompakterBlock =
-                "\"gesperrteFelder\": [\n" +
+                "\"" +
+                eigenschaftsName +
+                "\": [\n" +
                 kompakteZeilen.join(",\n") +
                 "\n            ]";
-        }
+
+        } /* Ende leerer / gefüllter Block */
 
 
         /* -----------------------------------
-        Alten automatisch formatierten Block
-        dieser Karte finden
+        Automatisch formatiertes Array finden
         ----------------------------------- */
 
         const suchText =
@@ -2686,36 +3034,129 @@ function () {
 
                         if (index === 0) {
                             return zeile;
-                        }
+                        } /* Ende erste Zeile */
 
                         return (
                             "            " +
                             zeile
                         );
-                    }
+
+                    } /* Ende Einrückung */
                 )
                 .join("\n");
 
 
         /* -----------------------------------
-        Nur das Array hinter
-        "gesperrteFelder" ersetzen
+        Automatischen Block ersetzen
         ----------------------------------- */
 
         const alterBlock =
-            "\"gesperrteFelder\": " +
+            "\"" +
+            eigenschaftsName +
+            "\": " +
             eingerueckterSuchText;
 
-        text =
-            text.replace(
-                alterBlock,
-                kompakterBlock
+        return text.replace(
+            alterBlock,
+            kompakterBlock
+        );
+
+    } /* Ende koordinatenKompaktFormatieren */
+
+
+    /* -----------------------------------
+    Alle Kartenfelder sortieren
+    ----------------------------------- */
+
+    for (
+        const kartenName
+        in window.reservatKartenDaten.karten
+    ) {
+
+        const karte =
+            window.reservatKartenDaten
+                .karten[kartenName];
+
+        if (
+            Array.isArray(
+                karte.gesperrteFelder
+            )
+        ) {
+
+            koordinatenSortieren(
+                karte.gesperrteFelder
             );
-    }
+
+        } /* Ende gesperrteFelder sortieren */
+
+
+        if (
+            Array.isArray(
+                karte.avatarEbene2Felder
+            )
+        ) {
+
+            koordinatenSortieren(
+                karte.avatarEbene2Felder
+            );
+
+        } /* Ende avatarEbene2Felder sortieren */
+
+    } /* Ende alle Karten sortieren */
+
+
+    /* -----------------------------------
+    Zunächst normales JSON erzeugen
+    ----------------------------------- */
+
+    let text =
+        JSON.stringify(
+            window.reservatKartenDaten,
+            null,
+            4
+        );
+
+
+    /* -----------------------------------
+    Koordinatenfelder aller Karten
+    kompakt formatieren
+    ----------------------------------- */
+
+    for (
+        const kartenName
+        in window.reservatKartenDaten.karten
+    ) {
+
+        const karte =
+            window.reservatKartenDaten
+                .karten[kartenName];
+
+
+        /* Gesperrte Felder */
+
+        text =
+            koordinatenKompaktFormatieren(
+                text,
+                "gesperrteFelder",
+                karte.gesperrteFelder
+            );
+
+
+        /* Avatar-Ebene-2-Felder */
+
+        text =
+            koordinatenKompaktFormatieren(
+                text,
+                "avatarEbene2Felder",
+                karte.avatarEbene2Felder
+            );
+
+    } /* Ende alle Karten formatieren */
 
 
     return text;
-};
+
+}; /* Ende reservatKartenJsonFormatieren */
 
 /* Ende Karteneditor - JSON schön formatieren */
 
@@ -3106,6 +3547,41 @@ function () {
 
     spielfeld.innerHTML = "";
 
+/* -----------------------------------
+Kartenebenen anlegen
+----------------------------------- */
+
+/* Kartenebene 1 */
+
+const kartenEbene1 =
+    document.createElement(
+        "div"
+    );
+
+kartenEbene1.id =
+    "kartenEbene1";
+
+spielfeld.appendChild(
+    kartenEbene1
+);
+
+
+/* Kartenebene 3 */
+
+const kartenEbene3 =
+    document.createElement(
+        "div"
+    );
+
+kartenEbene3.id =
+    "kartenEbene3";
+
+spielfeld.appendChild(
+    kartenEbene3
+);
+
+/* Ende Kartenebenen anlegen */
+
 
     for (let y = 0; y < 10; y++) {
 
@@ -3365,7 +3841,12 @@ function (zielPassage) {
     &lt;!-- =================================================
          SPIELFELD / KARTE
          ================================================= --&gt;
-    &lt;div id=&quot;spielfeld&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;spielfeld&quot;&gt;
+
+    &lt;!-- Kartenebene 3: Vordergrund --&gt;
+    &lt;div id=&quot;kartenEbene3&quot;&gt;&lt;/div&gt;
+
+&lt;/div&gt;
 
     &lt;div id=&quot;spielsteuerung&quot;&gt;
 
