@@ -373,55 +373,46 @@ box-sizing: border-box;
 }
 
 #spielsteuerung {
-width: 100%;
+    width: 100%;
 
-/* Restlichen Platz unter der Karte nutzen */
-flex: 1 1 auto;
+    /* Restlichen Platz unter der Karte nutzen */
+    flex: 1 1 auto;
 
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
 
-box-sizing: border-box;
+    box-sizing: border-box;
 
-/* Abstand rechts und zur Versionsanzeige unten */
-padding-right: 16px;
-padding-bottom: 24px;
+    /* Abstand rechts und zur Versionsanzeige unten */
+    padding-right: 16px;
+    padding-bottom: 24px;
 }
 
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-
-box-sizing: border-box;
-padding-right: 16px;
-}
 
 /* =========================================================
    Bewegungssteuerung
    ========================================================= */
 
 #bewegungssteuerung {
-display: grid;
+    display: grid;
 
-/* 3 x 3 Raster für das Steuerkreuz */
-grid-template-columns:
-    48px 48px 48px;
+    grid-template-columns:
+        48px 48px 48px;
 
-grid-template-rows:
-    48px 48px 48px;
+    grid-template-rows:
+        48px 48px 48px;
 
-width: 144px;
-height: 144px;
+    width: 144px;
+    height: 144px;
 
-/* Nicht vom übergeordneten Flex-Layout verformen lassen */
-flex: 0 0 144px;
+    /*
+    Freien Platz oben verwenden = nach unten.
+    Freien Platz links verwenden = nach rechts.
+    */
+    margin: auto 0 0 auto;
 
-margin: 12px 0 0 0;
-padding: 0;
-
-gap: 0;
+    padding: 0;
+    gap: 0;
 }
 
 
@@ -631,8 +622,7 @@ height: calc(100dvh - 16px);
     flex-direction: column;
     align-items: flex-end;
 
-    /* Bedienung unten anordnen */
-    justify-content: flex-end;
+
 
     box-sizing: border-box;
 
@@ -644,9 +634,7 @@ height: calc(100dvh - 16px);
     Steuerkreuz
     ----------------------------------- */
 
-#bewegungssteuerung {
-    margin: 12px 0 0 0;
-}
+
 
 }
 
@@ -656,7 +644,7 @@ height: calc(100dvh - 16px);
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.063";
+window.multiplayerTestVersion = "0.064";
 
 /* Ende Testversion */
 /* =========================================================
