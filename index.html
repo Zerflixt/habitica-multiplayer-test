@@ -213,16 +213,42 @@ SICHTBARE TESTVERSION
 /* Ende sichtbare Testversion */
 /* =========================================================
 SPIELFELD-KOPF
+Ort links - Symbole rechts
 ========================================================= */
 
 .spielfeld-kopf {
     display: flex;
     align-items: center;
-    gap: 15px;
+
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
 }
 
+/* -----------------------------------
+Ortsname
+----------------------------------- */
+
 .spielfeld-kopf h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+
     margin: 0;
+}
+
+/* -----------------------------------
+Symbole rechts
+----------------------------------- */
+
+#kopfSymbole {
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    margin-left: auto;
+    gap: 4px;
 }
 
 /* Ende Spielfeld-Kopf */
@@ -494,65 +520,85 @@ HANDY QUERFORMAT
 Karte links - Bewegungssteuerung rechts
 ========================================================= */
 
-/* =========================================================
-HANDY QUERFORMAT
-Karte maximal hoch - Bedienung rechts
-========================================================= */
 
 @media (orientation: landscape) and (max-height: 700px) {
 
     /* -----------------------------------
-    Gesamten Spielbereich nebeneinander
+    SugarCube-Ränder entfernen
+    ----------------------------------- */
+
+    #story,
+    #ui-bar.stowed ~ #story {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+
+    /* -----------------------------------
+    Gesamter Spielbereich
+
+    Karte links.
+    Kopf und Bedienung rechts.
     ----------------------------------- */
 
     #spielbereich {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        display: grid;
+
+        grid-template-columns:
+            auto minmax(0, 1fr);
+
+        grid-template-rows:
+            auto 1fr;
+
+        column-gap: 16px;
 
         width: 100%;
         max-width: none;
-
-        gap: 16px;
     }
 
 
     /* -----------------------------------
-    Karte nach verfügbarer Höhe
+    Karte links
+
+    Sie belegt beide Zeilen.
     ----------------------------------- */
 
     #spielfeld {
+        grid-column: 1;
+        grid-row: 1 / 3;
+
         width: calc(100dvh - 16px);
         height: calc(100dvh - 16px);
-
-        flex: 0 0 auto;
     }
 
 
     /* -----------------------------------
-    Bedienbereich rechts
+    Kopf rechts oben
+    ----------------------------------- */
+
+    #spielfeldKopf {
+        grid-column: 2;
+        grid-row: 1;
+
+        width: 100%;
+    }
+
+
+    /* -----------------------------------
+    Bedienbereich rechts unter dem Kopf
     ----------------------------------- */
 
     #spielsteuerung {
-        flex: 1 1 auto;
-        width: auto;
+        grid-column: 2;
+        grid-row: 2;
+
+        width: 100%;
+        min-width: 0;
 
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-
-        min-width: 220px;
-    }
-
-
-    /* -----------------------------------
-    Kopf rechts über der Steuerung
-    ----------------------------------- */
-
-    .spielfeld-kopf {
-        justify-content: center;
-        flex-wrap: wrap;
     }
 
 
@@ -563,18 +609,16 @@ Karte maximal hoch - Bedienung rechts
     #bewegungssteuerung {
         margin: 12px auto 0 auto;
     }
-	#story,
-	#ui-bar.stowed ~ #story {
-		margin-top: 0 !important;
-		margin-bottom: 0 !important;
-	}
+
 }
+
+
 
 /* Ende Handy Querformat */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.057";
+window.multiplayerTestVersion = "0.058";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3136,34 +3180,29 @@ function (zielPassage) {
 
 
     &lt;!-- =================================================
-         SPIELFELD / KARTE
-         ================================================= --&gt;
-
-    &lt;div id=&quot;spielfeld&quot;&gt;&lt;/div&gt;
-
-
-    &lt;!-- =================================================
-         BEDIENBEREICH
-         Hochformat: unter der Karte
+         KOPFLEISTE
+         Hochformat: über der Karte
          Querformat: rechts neben der Karte
          ================================================= --&gt;
 
-    &lt;div id=&quot;spielsteuerung&quot;&gt;
+    &lt;div id=&quot;spielfeldKopf&quot; class=&quot;spielfeld-kopf&quot;&gt;
 
 
         &lt;!-- ---------------------------------------------
-             Kopf mit Status, Kartenname und Schaltern
+             Aktueller Ort
              --------------------------------------------- --&gt;
 
-        &lt;div class=&quot;spielfeld-kopf&quot;&gt;
+        &lt;h2 id=&quot;kartenName&quot;&gt;
+            Karte wird geladen …
+        &lt;/h2&gt;
 
-            &lt;p id=&quot;schnappschussTest&quot;&gt;
-                Schnappschuss wird geprüft …
-            &lt;/p&gt;
 
-            &lt;h2 id=&quot;kartenName&quot;&gt;
-                Karte wird geladen …
-            &lt;/h2&gt;
+        &lt;!-- ---------------------------------------------
+             Rechte Symbolleiste
+             Später können hier weitere Symbole hinzukommen
+             --------------------------------------------- --&gt;
+
+        &lt;div id=&quot;kopfSymbole&quot;&gt;
 
 
             &lt;!-- Vollbild --&gt;
@@ -3195,7 +3234,37 @@ function (zielPassage) {
                 &gt;
             &lt;/button&gt;
 
+
         &lt;/div&gt;
+        &lt;!-- Ende rechte Symbolleiste --&gt;
+
+
+    &lt;/div&gt;
+    &lt;!-- Ende Kopfleiste --&gt;
+
+
+    &lt;!-- =================================================
+         SPIELFELD / KARTE
+         ================================================= --&gt;
+
+    &lt;div id=&quot;spielfeld&quot;&gt;&lt;/div&gt;
+
+
+    &lt;!-- =================================================
+         BEDIENBEREICH
+         ================================================= --&gt;
+
+    &lt;div id=&quot;spielsteuerung&quot;&gt;
+
+
+        &lt;!-- ---------------------------------------------
+             Technische Statusmeldung
+             Vorläufig noch vorhanden
+             --------------------------------------------- --&gt;
+
+        &lt;p id=&quot;schnappschussTest&quot;&gt;
+            Schnappschuss wird geprüft …
+        &lt;/p&gt;
 
 
         &lt;!-- ---------------------------------------------
@@ -3220,7 +3289,7 @@ function (zielPassage) {
                 aria-label=&quot;Nach oben&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    src=&quot;Daten/bewegung_wolfspfote_oben_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
@@ -3246,7 +3315,7 @@ function (zielPassage) {
                 aria-label=&quot;Nach rechts&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    src=&quot;Daten/bewegung_wolfspfote_oben_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
@@ -3259,23 +3328,20 @@ function (zielPassage) {
                 aria-label=&quot;Nach unten&quot;
             &gt;
                 &lt;img
-                    src=&quot;Daten/bewegung_wolfspfote_oben.png&quot;
+                    src=&quot;Daten/bewegung_wolfspfote_oben_gold_64.png&quot;
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
 
         &lt;/div&gt;
-
         &lt;!-- Ende Bewegungssteuerung --&gt;
 
 
     &lt;/div&gt;
-
     &lt;!-- Ende Bedienbereich --&gt;
 
 
 &lt;/div&gt;
-
 &lt;!-- Ende Spielbereich --&gt;
 
 
