@@ -258,6 +258,37 @@ Symbole rechts
 
 /* Ende Spielfeld-Kopf */
 /* =========================================================
+STATUS- / EREIGNISZEILE
+========================================================= */
+
+#ereigniszeile {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    /* Gleicher dezenter Rahmen wie bei der Kopfzeile */
+    border: 1px solid #888;
+
+    /* Bewusst flacher als die Kopfzeile */
+    padding: 2px 4px;
+}
+
+
+/* -----------------------------------
+Text der Status- / Ereigniszeile
+----------------------------------- */
+
+#ereigniszeile p {
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 18px;
+}
+
+
+/* Ende Status- / Ereigniszeile */
+/* =========================================================
 ABMELDEN-SYMBOL
 ========================================================= */
 
@@ -554,13 +585,11 @@ Karte links - Bewegungssteuerung rechts
 @media (orientation: landscape) and (max-height: 700px) {
 
 
-
-
     /* -----------------------------------
     Gesamter Spielbereich
 
     Karte links.
-    Kopf und Bedienung rechts.
+    Kopf, Ereigniszeile und Bedienung rechts.
     ----------------------------------- */
 
     #spielbereich {
@@ -570,8 +599,10 @@ Karte links - Bewegungssteuerung rechts
             auto minmax(0, 1fr);
 
         grid-template-rows:
-            auto 1fr;
-height: calc(100dvh - 16px);
+            auto auto 1fr;
+
+        height: calc(100dvh - 16px);
+
         column-gap: 16px;
 
         width: 100%;
@@ -582,12 +613,12 @@ height: calc(100dvh - 16px);
     /* -----------------------------------
     Karte links
 
-    Sie belegt beide Zeilen.
+    Sie belegt alle drei Zeilen.
     ----------------------------------- */
 
     #spielfeld {
         grid-column: 1;
-        grid-row: 1 / 3;
+        grid-row: 1 / 4;
 
         width: calc(100dvh - 16px);
         height: calc(100dvh - 16px);
@@ -607,44 +638,51 @@ height: calc(100dvh - 16px);
 
 
     /* -----------------------------------
-    Bedienbereich rechts unter dem Kopf
+    Status- / Ereigniszeile rechts
     ----------------------------------- */
 
-#spielsteuerung {
-    grid-column: 2;
-    grid-row: 2;
+    #ereigniszeile {
+        grid-column: 2;
+        grid-row: 2;
 
-    width: 100%;
-    min-width: 0;
-    min-height: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+        width: 100%;
+    }
 
 
+    /* -----------------------------------
+    Bedienbereich rechts unten
+    ----------------------------------- */
 
-    box-sizing: border-box;
+    #spielsteuerung {
+        grid-column: 2;
+        grid-row: 3;
 
-    /* Etwas Abstand vom rechten und unteren Displayrand */
-    padding-right: 16px;
-    padding-bottom: 16px;
-}
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        box-sizing: border-box;
+
+        /* Abstand vom rechten und unteren Displayrand */
+        padding-right: 16px;
+        padding-bottom: 16px;
+    }
+
+
     /* -----------------------------------
     Steuerkreuz
     ----------------------------------- */
 
 
-
-}
-
-
-
-/* Ende Handy Querformat */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+}</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.066";
+window.multiplayerTestVersion = "0.067";
 
 /* Ende Testversion */
 /* =========================================================
