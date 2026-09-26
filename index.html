@@ -574,7 +574,7 @@ Karte maximal hoch - Bedienung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.056";
+window.multiplayerTestVersion = "0.057";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1880,7 +1880,25 @@ window.firebaseOnValue(
                 avatarNachUid[
                     eintrag.uid
                 ];
+/* -----------------------------------
+Eigener Avatar immer vor den
+anderen Avataren anzeigen
+----------------------------------- */
 
+if (canvas) {
+
+    if (
+        firebaseUser &&
+        eintrag.uid === firebaseUser.uid
+    ) {
+
+        canvas.style.zIndex = "20";
+
+    } else {
+
+        canvas.style.zIndex = "10";
+    }
+}
 
             if (
                 !position ||
