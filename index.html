@@ -522,7 +522,7 @@ Karte maximal hoch - Bedienung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.052";
+window.multiplayerTestVersion = "0.053";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1041,6 +1041,44 @@ async function () {
 };
 
 /* Ende Logout */
+/* =========================================================
+VOLLBILD UMSCHALTEN
+========================================================= */
+
+window.vollbildUmschalten =
+async function () {
+
+    try {
+
+        /* -----------------------------------
+        Noch nicht im Vollbild
+        ----------------------------------- */
+
+        if (!document.fullscreenElement) {
+
+            await document.documentElement.requestFullscreen();
+
+            return;
+        }
+
+
+        /* -----------------------------------
+        Vollbild wieder verlassen
+        ----------------------------------- */
+
+        await document.exitFullscreen();
+
+
+    } catch (fehler) {
+
+        console.error(
+            "Vollbild konnte nicht umgeschaltet werden:",
+            fehler
+        );
+    }
+};
+
+/* Ende Vollbild umschalten */
 /* =========================================================
 SCHNAPPSCHUSS + HABITICA-AVATAR
 ========================================================= */
@@ -2988,16 +3026,16 @@ function (zielPassage) {
 
 
     &lt;!-- =================================================
-         RECHTER BEDIENBEREICH
-         Im Hochformat wird dieser Bereich weiterhin
-         unterhalb der Karte angezeigt.
+         BEDIENBEREICH
+         Hochformat: unter der Karte
+         Querformat: rechts neben der Karte
          ================================================= --&gt;
 
     &lt;div id=&quot;spielsteuerung&quot;&gt;
 
 
         &lt;!-- ---------------------------------------------
-             Kopf mit Status, Kartenname und Abmelden
+             Kopf mit Status, Kartenname und Schaltern
              --------------------------------------------- --&gt;
 
         &lt;div class=&quot;spielfeld-kopf&quot;&gt;
@@ -3009,6 +3047,24 @@ function (zielPassage) {
             &lt;h2 id=&quot;kartenName&quot;&gt;
                 Karte wird geladen …
             &lt;/h2&gt;
+
+
+            &lt;!-- Vollbild --&gt;
+
+            &lt;button
+                id=&quot;vollbildButton&quot;
+                onclick=&quot;window.vollbildUmschalten()&quot;
+                aria-label=&quot;Vollbild umschalten&quot;
+                title=&quot;Vollbild&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/vollbild_gold.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+
+            &lt;!-- Abmelden --&gt;
 
             &lt;button
                 id=&quot;abmeldenButton&quot;
@@ -3098,7 +3154,7 @@ function (zielPassage) {
 
     &lt;/div&gt;
 
-    &lt;!-- Ende rechter Bedienbereich --&gt;
+    &lt;!-- Ende Bedienbereich --&gt;
 
 
 &lt;/div&gt;
