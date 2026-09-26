@@ -361,11 +361,41 @@ SPIELFIGUR AUF DEM SPIELFELD
    ========================================================= */
 
 #spielbereich {
-    width: min(500px, 100%);
+width: min(500px, 100%);
+
+/* Gesamte sichtbare Displayhöhe nutzen */
+min-height: 100dvh;
+
+display: flex;
+flex-direction: column;
+
+box-sizing: border-box;
 }
 
 #spielsteuerung {
-    width: 100%;
+width: 100%;
+
+/* Restlichen Platz unter der Karte nutzen */
+flex: 1 1 auto;
+
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+justify-content: flex-end;
+
+box-sizing: border-box;
+
+/* Abstand rechts und zur Versionsanzeige unten */
+padding-right: 16px;
+padding-bottom: 24px;
+}
+
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+
+box-sizing: border-box;
+padding-right: 16px;
 }
 
 /* =========================================================
@@ -384,8 +414,7 @@ SPIELFIGUR AUF DEM SPIELFELD
     width: 144px;
     height: 144px;
 
-margin:
-    12px 0 0 auto;
+margin: 12px 0 0 0;
 
     gap: 0;
 }
@@ -585,20 +614,27 @@ height: calc(100dvh - 16px);
     Bedienbereich rechts unter dem Kopf
     ----------------------------------- */
 
-    #spielsteuerung {
-        grid-column: 2;
-        grid-row: 2;
+#spielsteuerung {
+    grid-column: 2;
+    grid-row: 2;
 
-        width: 100%;
-        min-width: 0;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
 
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 
+    /* Bedienung unten anordnen */
+    justify-content: flex-end;
 
+    box-sizing: border-box;
+
+    /* Etwas Abstand vom rechten und unteren Displayrand */
+    padding-right: 16px;
+    padding-bottom: 16px;
+}
     /* -----------------------------------
     Steuerkreuz
     ----------------------------------- */
@@ -615,7 +651,7 @@ height: calc(100dvh - 16px);
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.061";
+window.multiplayerTestVersion = "0.062";
 
 /* Ende Testversion */
 /* =========================================================
